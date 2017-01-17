@@ -1,18 +1,24 @@
 import psycopg2
 import os
+from psycopg2.extras import DictCursor
 
 DB_NAME = 'pld'
 DB_USER = 'pld'
+TABLE_NAME_PREFIX = 'roni'
 
 
 def connection():
     return psycopg2.connect('dbname=%s user=%s' % (DB_NAME, DB_USER))
 
 
+def cursor(con):
+    return con.cursor(cursor_factory=DictCursor)
+
+
 def init_db():
     # 1. Check migrations
     conn = connection()
-    cur = conn.cursor()
+    cur = cursor(conn)
 
     # 2. Check migrations log table
     # Check if migration log table exists
@@ -37,7 +43,7 @@ def init_db():
             last_entry = cur.fetchone()
             print(last_entry)
 
-            if last_entry and last_entry[1] >= int(log_level):
+            if last_entry and last_entry['current_mig_level'] >= int(log_level):
                 print('Migration already exists %s' % file)
             else:
                 # Execute sql

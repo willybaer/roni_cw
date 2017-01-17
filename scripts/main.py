@@ -1,9 +1,12 @@
 import sys
-import db.connection as DB_CON
+import db.connection as db_con
+from events.event import Event
 
 
 def main(argv):
-    DB_CON.init_db()
+    db_con.init_db()
+    for event in Event.find_all():
+        print(event.uuid)
     pass
 
 
