@@ -7,5 +7,11 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/pld</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="postgres@192.168.0.171 Raspbian" uuid="5317028e-9809-4671-9468-d60f3f159268">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://192.168.0.171:5432/postgres</jdbc-url>
+    </data-source>
   </component>
 </project>

@@ -1,7 +1,7 @@
 import uuid
 import regex
 import db.connection as db_con
-from psycopg2.extensions import AsIs
+from db.statements import Select
 
 
 class Model(object):
@@ -24,7 +24,10 @@ class Model(object):
     def find_all(cls):
         con = db_con.connection()
         cur = db_con.cursor(con)
-        cur.execute('select * from %s', (AsIs(cls.table_name()),))
+
+        statement = Select.select().from_table(cls.table_name())
+        print(statement.query)
+        cur.execute(statement.query)
 
         # For each entry create a new instance
         entries = cur.fetchall()
@@ -37,3 +40,4 @@ class Model(object):
         con.close()
 
         return model_instances
+
