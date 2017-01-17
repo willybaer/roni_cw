@@ -4,11 +4,12 @@ from psycopg2.extras import DictCursor
 
 DB_NAME = 'pld'
 DB_USER = 'pld'
+DB_PASSWORD = ''
 TABLE_NAME_PREFIX = 'roni'
 
 
 def connection():
-    return psycopg2.connect('dbname=%s user=%s' % (DB_NAME, DB_USER))
+    return psycopg2.connect('dbname=%s user=%s password=%s' % (DB_NAME, DB_USER, DB_PASSWORD))
 
 
 def cursor(con):
