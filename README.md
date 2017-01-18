@@ -13,7 +13,15 @@ sudo nano /etc/postgresql/9.4/main/pg_hba.conf
 At the end of this file, enter the following line:
 
 host     all     all     192.168.0.0/24     md5
-  
+
+### Change local authenction method from peer to md5
+From
+
+local   all             postgres                                peer
+
+To
+
+local   all             postgres                                md5
 ### Allow connections from outside
 sudo nano /etc/postgresql/9.4/main/postgresql.conf
 

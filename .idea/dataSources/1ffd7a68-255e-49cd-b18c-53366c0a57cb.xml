@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="postgres@192.168.0.171">
+  <database-model serializer="dbm" rdbms="POSTGRES" format-version="4.0">
+    <root id="1"/>
+    <database id="2" parent="1" name="postgres">
+      <ObjectId>12141</ObjectId>
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </database>
+    <schema id="3" parent="2" name="public">
+      <ObjectId>2200</ObjectId>
+      <IntrospectionTimestamp>2017-01-18.01:09:58.641</IntrospectionTimestamp>
+      <IntrospectionStateNumber>686</IntrospectionStateNumber>
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="4" parent="2" name="pg_catalog">
+      <ObjectId>11</ObjectId>
+    </schema>
+    <schema id="5" parent="2" name="pg_toast">
+      <ObjectId>99</ObjectId>
+    </schema>
+    <schema id="6" parent="2" name="pg_temp_1">
+      <ObjectId>11320</ObjectId>
+    </schema>
+    <schema id="7" parent="2" name="pg_toast_temp_1">
+      <ObjectId>11321</ObjectId>
+    </schema>
+    <schema id="8" parent="2" name="information_schema">
+      <ObjectId>11591</ObjectId>
+    </schema>
+    <sequence id="9" parent="3" name="roni_mig_log_id_seq">
+      <ObjectId>16384</ObjectId>
+      <StateNumber>683</StateNumber>
+      <SequenceIdentity>1</SequenceIdentity>
+    </sequence>
+    <table id="10" parent="3" name="roni_event">
+      <ObjectId>16394</ObjectId>
+      <StateNumber>686</StateNumber>
+    </table>
+    <table id="11" parent="3" name="roni_location">
+      <ObjectId>16405</ObjectId>
+      <StateNumber>686</StateNumber>
+    </table>
+    <table id="12" parent="3" name="roni_mig_log">
+      <ObjectId>16386</ObjectId>
+      <StateNumber>683</StateNumber>
+    </table>
+    <routine id="13" parent="3" name="roni_update_created">
+      <ObjectId>16393</ObjectId>
+      <StateNumber>684</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <RoutineKind>function</RoutineKind>
+    </routine>
+    <routine id="14" parent="3" name="roni_update_modified">
+      <ObjectId>16392</ObjectId>
+      <StateNumber>684</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <RoutineKind>function</RoutineKind>
+    </routine>
+    <column id="15" parent="10" name="uuid">
+      <Position>1</Position>
+      <DataType>varchar(128)|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="16" parent="10" name="description">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="17" parent="10" name="created_at">
+      <Position>3</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>686</StateNumber>
+      <DefaultExpression>now()</DefaultExpression>
+    </column>
+    <column id="18" parent="10" name="modified_at">
+      <Position>4</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>686</StateNumber>
+      <DefaultExpression>now()</DefaultExpression>
+    </column>
+    <index id="19" parent="10" name="pk_event">
+      <ObjectId>16402</ObjectId>
+      <ColNames>uuid</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="20" parent="10" name="pk_event">
+      <ObjectId>16403</ObjectId>
+      <ColNames>uuid</ColNames>
+      <UnderlyingIndexName>pk_event</UnderlyingIndexName>
+      <Primary>1</Primary>
+    </key>
+    <trigger id="21" parent="10" name="roni_event_update">
+      <ObjectId>16404</ObjectId>
+      <StateNumber>686</StateNumber>
+      <Turn>before-row</Turn>
+      <Events>ID</Events>
+      <FireMode>origin</FireMode>
+    </trigger>
+    <column id="22" parent="11" name="uuid">
+      <Position>1</Position>
+      <DataType>varchar(128)|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="23" parent="11" name="name">
+      <Position>2</Position>
+      <DataType>varchar(256)|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="24" parent="11" name="description">
+      <Position>3</Position>
+      <DataType>text|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="25" parent="11" name="street">
+      <Position>4</Position>
+      <DataType>varchar(256)|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="26" parent="11" name="zip">
+      <Position>5</Position>
+      <DataType>varchar(64)|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="27" parent="11" name="city">
+      <Position>6</Position>
+      <DataType>varchar(256)|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="28" parent="11" name="country">
+      <Position>7</Position>
+      <DataType>varchar(128)|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="29" parent="11" name="phone">
+      <Position>8</Position>
+      <DataType>varchar(128)|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="30" parent="11" name="email">
+      <Position>9</Position>
+      <DataType>varchar(256)|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="31" parent="11" name="website">
+      <Position>10</Position>
+      <DataType>varchar(256)|0</DataType>
+      <StateNumber>686</StateNumber>
+    </column>
+    <column id="32" parent="11" name="created_at">
+      <Position>11</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>686</StateNumber>
+      <DefaultExpression>now()</DefaultExpression>
+    </column>
+    <column id="33" parent="11" name="modified_at">
+      <Position>12</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>686</StateNumber>
+      <DefaultExpression>now()</DefaultExpression>
+    </column>
+    <index id="34" parent="11" name="pk_location">
+      <ObjectId>16413</ObjectId>
+      <ColNames>uuid</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="35" parent="11" name="uk_location_address">
+      <ObjectId>16417</ObjectId>
+      <ColNames>street
+zip
+city</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="36" parent="11" name="uk_location_email">
+      <ObjectId>16415</ObjectId>
+      <ColNames>email</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="37" parent="11" name="pk_location">
+      <ObjectId>16414</ObjectId>
+      <ColNames>uuid</ColNames>
+      <UnderlyingIndexName>pk_location</UnderlyingIndexName>
+      <Primary>1</Primary>
+    </key>
+    <key id="38" parent="11" name="uk_location_address">
+      <ObjectId>16418</ObjectId>
+      <ColNames>street
+zip
+city</ColNames>
+      <UnderlyingIndexName>uk_location_address</UnderlyingIndexName>
+    </key>
+    <key id="39" parent="11" name="uk_location_email">
+      <ObjectId>16416</ObjectId>
+      <ColNames>email</ColNames>
+      <UnderlyingIndexName>uk_location_email</UnderlyingIndexName>
+    </key>
+    <trigger id="40" parent="11" name="roni_location_update">
+      <ObjectId>16419</ObjectId>
+      <StateNumber>686</StateNumber>
+      <Turn>before-row</Turn>
+      <Events>ID</Events>
+      <FireMode>origin</FireMode>
+    </trigger>
+    <column id="41" parent="12" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>683</StateNumber>
+      <DefaultExpression>nextval(&apos;roni_mig_log_id_seq&apos;::regclass)</DefaultExpression>
+    </column>
+    <column id="42" parent="12" name="current_mig_level">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>683</StateNumber>
+    </column>
+    <index id="43" parent="12" name="roni_mig_log_pkey">
+      <ObjectId>16390</ObjectId>
+      <ColNames>id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="44" parent="12" name="roni_mig_log_pkey">
+      <ObjectId>16391</ObjectId>
+      <ColNames>id</ColNames>
+      <UnderlyingIndexName>roni_mig_log_pkey</UnderlyingIndexName>
+      <Primary>1</Primary>
+    </key>
+    <argument id="45" parent="13">
+      <ArgumentDirection>R</ArgumentDirection>
+      <DataType>trigger|0</DataType>
+    </argument>
+    <argument id="46" parent="14">
+      <ArgumentDirection>R</ArgumentDirection>
+      <DataType>trigger|0</DataType>
+    </argument>
+  </database-model>
+</dataSource>
