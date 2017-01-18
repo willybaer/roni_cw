@@ -27,11 +27,11 @@ def init_db():
                 ('roni_mig_log',))
     if not cur.fetchone()[0]:
         print('creating migrations log table')
-        s = open('scripts/db/migrations/mig_log.sql', 'r').read()
+        s = open('src/db/migrations/mig_log.sql', 'r').read()
         cur.execute(s)
         conn.commit()
 
-    for file in os.listdir('scripts/db/migrations'):  # Return the name of the files in directory
+    for file in os.listdir('src/db/migrations'):  # Return the name of the files in directory
         if file.endswith('.sql') and ('mig_log' not in file):
             print(file)
 
@@ -49,7 +49,7 @@ def init_db():
             else:
                 # Execute sql
                 print('executing migration for file %s' % file)
-                s = open('scripts/db/migrations/%s' % file, 'r').read()
+                s = open('src/db/migrations/%s' % file, 'r').read()
                 cur.execute(s)
                 conn.commit()
 

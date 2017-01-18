@@ -7,5 +7,11 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://192.168.0.171:5432/postgres</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="pld@localhost" uuid="771349d2-9891-46a6-82af-ff11cebef852">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/pld</jdbc-url>
+    </data-source>
   </component>
 </project>

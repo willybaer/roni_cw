@@ -1,4 +1,6 @@
 from db.model import Model
+from psycopg2.extensions import AsIs
+import db.connection as db_con
 
 
 class Location(Model):
@@ -23,3 +25,16 @@ class Location(Model):
         self.zip = zip
         self.country = country
         self.website = website
+
+    def insert(self):
+        con = db_con.connection()
+        cur = db_con.cursor(con)
+
+        cur.execute('INSERT INTO %s '
+                    '(uuid, name, description, email, phone, city, street, zip, country, website) '
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                    (AsIs(self.table_name()), self.uuid, self.name, self.description, self.email,
+                     self.phone, self.city, self.street, self.zip, self.country, self.website))
+        con.commit()
+        cur.close()
+        con.close()
