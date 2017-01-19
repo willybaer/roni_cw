@@ -7,7 +7,7 @@ import regex
 
 def parse_cities():
     # First clear cities database
-    City.delete_all()
+    City.delete_all_for_country_code('DE')
 
     alphabet = list(map(chr, list(range(97, 123))))
     # 1. Iterate through all city lists
