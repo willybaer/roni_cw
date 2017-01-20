@@ -1,6 +1,6 @@
 import psycopg2
+import db.config as config_file
 from psycopg2.extras import DictCursor
-import config as config_file
 
 DB_CONFIG = next(iter(config_file.db_config.values()))
 

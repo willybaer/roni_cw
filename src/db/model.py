@@ -1,7 +1,7 @@
 import uuid as UUID
 import regex
-import connection as db_con
-from statements import Select
+import db.connection as db_con
+from db.statements import Select
 from psycopg2.extensions import AsIs
 
 

@@ -1,8 +1,8 @@
 import getopt
 import sys
 import os
-import connection as db_con
-import config as config_file
+import db.connection as db_con
+import db.config as config_file
 import datetime
 from psycopg2.extensions import AsIs
 
@@ -13,7 +13,7 @@ def new(file_name):
     # Creating migrations folder if not exists
     full_path = os.path.realpath(__file__)
     file_dir = os.path.split(full_path)[0]
-    migrations_dir = '%s/migrations' % file_dir
+    migrations_dir = '%s/db/migrations' % file_dir
     if not os.path.exists(migrations_dir):
         os.makedirs(migrations_dir)
 
@@ -27,7 +27,7 @@ def migrate(env):
     # Migrations file
     full_path = os.path.realpath(__file__)
     file_dir = os.path.split(full_path)[0]
-    migrations_dir = '%s/migrations' % file_dir
+    migrations_dir = '%s/db/migrations' % file_dir
     if os.path.exists(migrations_dir):
         # Run migrations
         conn = db_con.connection(config_file.db_config[env])
