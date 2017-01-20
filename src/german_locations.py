@@ -5,6 +5,7 @@ from psycopg2 import IntegrityError
 
 import regex
 
+
 def parse_cities():
     # First clear cities database
     City.delete_all_for_country_code('DE')
@@ -53,7 +54,6 @@ def parse_cities():
                                 new_city.insert()
                             except IntegrityError as e:
                                 print(e)
-
 
 
 if __name__ == "__main__":
