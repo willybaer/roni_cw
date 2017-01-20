@@ -47,6 +47,7 @@ def migrate(env):
         files = os.listdir(migrations_dir)
         ordered_files = sorted(files, key=lambda x: int(x.split('_')[0]))
         for file in ordered_files:  # Return the name of the files in directory
+            print(ordered_files)
             if file.endswith('.sql'):
                 # Log timestamp
                 log_level = file.split('_')
@@ -61,7 +62,7 @@ def migrate(env):
                 else:
                     # Execute sql
                     print('executing migration for file %s' % file)
-                    s = open('%s/%s' % (migrations_dir, file), 'r').read()
+                    s = open('%s/%s' % (migrations_dir, file), 'rb').read().decode('UTF-8')
                     cur.execute(s)
                     conn.commit()
 
