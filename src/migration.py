@@ -44,7 +44,9 @@ def migrate(env):
             print('database changelog table already exists')
 
         # Iterate over migration files
-        for file in os.listdir(migrations_dir):  # Return the name of the files in directory
+        files = os.listdir(migrations_dir)
+        ordered_files = sorted(files, key=lambda x: int(x.split('_')[0]))
+        for file in ordered_files:  # Return the name of the files in directory
             if file.endswith('.sql'):
                 # Log timestamp
                 log_level = file.split('_')
