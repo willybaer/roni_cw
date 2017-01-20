@@ -1,6 +1,7 @@
-from db.model import Model
-import db.connection as db_con
 from psycopg2.extensions import AsIs
+
+import db.connection as db_con
+from db.model import Model
 
 
 class Event(Model):

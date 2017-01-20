@@ -1,6 +1,7 @@
-from db.model import Model
 from psycopg2.extensions import AsIs
+
 import db.connection as db_con
+from db.model import Model
 
 
 class Location(Model):

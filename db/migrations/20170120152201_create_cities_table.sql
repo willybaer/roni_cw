@@ -1,7 +1,7 @@
 /*
  * City object
  */
-create table roni_city (
+create table city (
 		uuid          varchar(128) not null,
     zip           varchar(64),
     city          varchar(256),
@@ -14,6 +14,6 @@ create table roni_city (
 		constraint pk_city primary key (uuid),
 		constraint uk_city_city unique (city, zip, country)
 );
-create trigger roni_city_update
-before insert or update on roni_city
-for each row execute procedure roni_update_modified();
+create trigger city_update
+before insert or update on city
+for each row execute procedure update_modified();

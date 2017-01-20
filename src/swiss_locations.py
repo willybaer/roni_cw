@@ -74,7 +74,7 @@ def parse_cities():
 
                         new_city = City(zip=zip, city=name, state=state, latitude=lat,
                                         longitude=lng, canton=canton, website=website,
-                                        alpha_2_code='CH')
+                                        alpha_2_code='CH', country='Schweiz')
                         print('Creating City %s' % new_city.uuid)
                         try:
                             new_city.insert()
