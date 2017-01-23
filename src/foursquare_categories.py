@@ -36,6 +36,5 @@ def save_category(parent_category_id, categories, language):
 
         save_category(new_category.uuid, category['categories'], language)
 
-
 if __name__ == '__main__':
     setup_categories()
