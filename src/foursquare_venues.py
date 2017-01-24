@@ -1,6 +1,7 @@
 import json
 from urllib.request import urlopen
 from geo.geo import Geo
+from geo.map_square import MapSquare
 
 CLIEND_ID = '33FG1P5NOGUXSXBBF24XJHBWLSUGLKIH2F0SSJT2F1ZS1FLE'
 SECRET = '1EPSAW44U3M5PPPCCCNRUXURVGHHRHXUE2DAYM0VFE33DARZ'
@@ -8,7 +9,9 @@ VENUES_URL = 'https://api.foursquare.com/v2/venues/search'
 
 
 def get_venues():
+    MapSquare.delete_all()
     squares = Geo.calculate_map_squares([47.452498, 8.413337], [47.382922, 8.525270], 800)
+
     if squares:
         print(squares[1].__dict__)
         url = '%s?client_id=%s&client_secret=%s&v=20170120&m=foursquare&sw=%s&ne=%s&intent=browse' % (

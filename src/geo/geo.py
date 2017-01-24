@@ -20,18 +20,18 @@ class Geo(object):
 
         for index, latitude in enumerate(latitudes):
             if index < (len(latitudes) - 1):
-                top_left_latitude = latitudes[index + 1]
-                bottom_right_latitude = latitude
-                longitude_degrees_range_bottom = cls.longitude_degrees_for_meters(bottom_right_latitude, meters)
-                longitude_degrees_range_top = cls.longitude_degrees_for_meters(top_left_latitude, meters)
+                top_latitude = latitudes[index + 1]
+                bottom_latitude = latitude
+                longitude_degrees_range_bottom = cls.longitude_degrees_for_meters(bottom_latitude, meters)
+                longitude_degrees_range_top = cls.longitude_degrees_for_meters(top_latitude, meters)
 
                 longitude_steps = int((diff_longitude / longitude_degrees_range_bottom) + 0.5)
 
                 for step in range(longitude_steps):
-                    top_left_longitude = top_left_position[1] + (longitude_degrees_range_top * step)
-                    bottom_right_longitude = top_left_position[1] + (longitude_degrees_range_bottom * (step + 1))
-                    map_squares.append(MapSquare([top_left_latitude, bottom_right_longitude],
-                                                 [bottom_right_latitude, top_left_longitude]))
+                    top_longitude = top_left_position[1] + (longitude_degrees_range_top * step)
+                    bottom_longitude = top_left_position[1] + (longitude_degrees_range_bottom * (step + 1))
+                    map_squares.append(MapSquare(top_right=[top_latitude, bottom_longitude],
+                                                 bottom_left=[bottom_latitude, top_longitude]))
         return map_squares
 
     @classmethod
