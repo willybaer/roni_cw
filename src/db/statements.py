@@ -52,3 +52,11 @@ class Comparator(Statement):
     def equals(self, value):
         self.query = '%s = \'%s\'' % (self.query, value)
         return Where(self.query)
+
+    def is_null(self):
+        self.query = '%s IS NULL' % self.query
+        return Where(self.query)
+
+    def is_not_null(self):
+        self.query = '%s IS NOT NULL' % self.query
+        return Where(self.query)

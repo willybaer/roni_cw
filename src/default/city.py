@@ -1,8 +1,8 @@
-from psycopg2.extensions import AsIs
-
 import db.connection as db_con
-from db.model import Model
 
+from db.model import Model
+from psycopg2.extensions import AsIs
+from db.statements import Select
 
 class City(Model):
     def __init__(self,
@@ -27,19 +27,6 @@ class City(Model):
         self.alpha_2_code = alpha_2_code
         self.website = website
 
-    def insert(self):
-        con = db_con.connection()
-        cur = db_con.cursor(con)
-
-        cur.execute('INSERT INTO %s '
-                    '(uuid, zip, city, country, state, latitude, longitude, canton, alpha_2_code, website) '
-                    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                    (AsIs(self.table_name()), self.uuid, self.zip, self.city, self.country,
-                     self.state, self.latitude, self.longitude, self.canton, self.alpha_2_code, self.website))
-        con.commit()
-        cur.close()
-        con.close()
-
     @classmethod
     def delete_all_for_country_code(cls, country_code):
         con = db_con.connection()
@@ -50,4 +37,23 @@ class City(Model):
         con.commit()
         cur.close()
         con.close()
+
+    @classmethod
+    def find_by_city_and_cc(cls, city, cc):
+        con = db_con.connection()
+        cur = db_con.cursor(con)
+
+        statement = Select.select().from_table(cls.table_name()).where('city').equals(city).and_column('alpha_2_code').equals(cc)
+        print(statement.query)
+        cur.execute(statement.query)
+
+        entry = cur.fetchone()
+        city_entry = None
+        if entry:
+            city_entry = cls(**entry)
+
+        cur.close()
+        con.close()
+
+        return city_entry
 

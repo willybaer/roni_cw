@@ -3,6 +3,7 @@ from db.model import Model
 from psycopg2.extensions import AsIs
 from db.statements import Select
 
+
 class Category(Model):
     def __init__(self,
                  foursquare_id=None,
@@ -25,39 +26,6 @@ class Category(Model):
         self.name_de = name_de
         self.foursquare_icon = foursquare_icon
         self.foursquare_id = foursquare_id
-
-    def insert(self):
-        con = db_con.connection()
-        cur = db_con.cursor(con)
-
-        cur.execute('INSERT INTO %s '
-                    '(uuid, '
-                    'parent_category_uuid, '
-                    'foursquare_id, '
-                    'foursquare_icon, '
-                    'name_de, '
-                    'name_en, '
-                    'name_it, '
-                    'name_es, '
-                    'name_fr, '
-                    'name_ja) '
-                    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                    (AsIs(self.table_name()),
-                     self.uuid,
-                     self.paren_category_uuid,
-                     self.foursquare_id,
-                     self.foursquare_icon,
-                     self.name_de,
-                     self.name_en,
-                     self.name_it,
-                     self.name_es,
-                     self.name_fr,
-                     self.name_ja))
-
-        con.commit()
-        cur.close()
-        con.close()
-
 
     def update(self):
         con = db_con.connection()
@@ -108,5 +76,3 @@ class Category(Model):
         con.close()
 
         return model_instance
-
-

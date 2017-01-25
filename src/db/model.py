@@ -16,6 +16,28 @@ class Model(object):
             self.uuid = str(UUID.uuid4())
         self.__dict__.update(entries)
 
+    def insert(self):
+        con = db_con.connection()
+        cur = db_con.cursor(con)
+
+        insert_statement = 'INSERT INTO %s (' + ', '.join(self.attrs().keys()) + ') VALUES (' + ', '.join((['%s'] * len(self.attrs().keys()))) + ')'
+        values = list(self.attrs().values())
+        values.insert(0, AsIs(self.table_name()))
+        cur.execute(insert_statement, tuple(values))
+
+        con.commit()
+        cur.close()
+        con.close()
+
+    def excluded_atts(self):
+        return ['created_at', 'modified_at']
+
+    def attrs(self):
+        attrs_dict = self.__dict__
+        wanted_keys = list(k for k in attrs_dict.keys() if k not in self.excluded_atts())
+        attrs_dict = dict((k, v) for k, v in attrs_dict.items() if k in wanted_keys)
+        return attrs_dict
+
     @classmethod
     def table_name(cls):
         if cls.class_name is None:
