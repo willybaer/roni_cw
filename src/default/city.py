@@ -39,11 +39,11 @@ class City(Model):
         con.close()
 
     @classmethod
-    def find_by_city_and_cc(cls, city, cc):
+    def find_by_zip_and_cc(cls, zip, cc):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = Select.select().from_table(cls.table_name()).where('city').equals(city).and_column('alpha_2_code').equals(cc)
+        statement = Select.select().from_table(cls.table_name()).where('zip').posix('.*%s.*' % zip).and_column('alpha_2_code').equals(cc)
         print(statement.query)
         cur.execute(statement.query)
 

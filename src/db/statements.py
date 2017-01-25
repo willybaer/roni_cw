@@ -53,6 +53,18 @@ class Comparator(Statement):
         self.query = '%s = \'%s\'' % (self.query, value)
         return Where(self.query)
 
+    def like(self, value):
+        self.query = '%s LIKE \'%s\'' % (self.query, value)
+        return Where(self.query)
+
+    def similiar(self, value):
+        self.query = '%s SIMILIAR TO \'%s\'' % (self.query, value)
+        return Where(self.query)
+
+    def posix(self, value):
+        self.query = '%s ~ \'%s\'' % (self.query, value)
+        return Where(self.query)
+
     def is_null(self):
         self.query = '%s IS NULL' % self.query
         return Where(self.query)

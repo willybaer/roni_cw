@@ -29,7 +29,7 @@ def get_venues():
             ','.join(str(x) for x in square.top_right))
 
         print(url)
-        response = urlopen(url).read()
+        response = urlopen(url).read() # Verarbeiten von urllib.error.HTTPError: HTTP Error 403: Forbidden wenn die Requests aufgebraucht sind
         venues = json.loads(response, encoding='UTF-8')['response']['venues']
 
         # Filter venues where a full location is existing
@@ -38,10 +38,11 @@ def get_venues():
                                                     and 'cc' in x['location']
                                                     and 'country' in x['location']
                                                     and 'address' in x['location']
+                                                    and 'postalCode' in x['location']
                                                     and 'city' in x['location'], venues))
 
             for filtered_venue in filtered_venues:
-                city = City.find_by_city_and_cc(city=filtered_venue['location']['city'],
+                city = City.find_by_zip_and_cc(zip=filtered_venue['location']['postalCode'],
                                                 cc=filtered_venue['location']['cc'])
                 if city:
                     # We will only add foursquare venues, if there is an existing city entry in our db
