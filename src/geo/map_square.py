@@ -57,7 +57,8 @@ class MapSquare(Model):
         cur = db_con.cursor(con)
 
         for square in squares:
-            square.insert(connection=con, cursor=cur)
+            cur.execute(square.insert_statement(), square.insert_values())
+            con.commit()
 
         cur.close()
         con.close()

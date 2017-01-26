@@ -16,27 +16,27 @@ class Model(object):
             self.uuid = str(UUID.uuid4())
         self.__dict__.update(entries)
 
-    def insert(self, connection, cursor):
-        con = connection
-        cur = cursor
+    def insert_statement(self):
+        return 'INSERT INTO %s (' + ', '.join(self.attrs().keys()) + ') VALUES (' + ', '.join(
+            (['%s'] * len(self.attrs().keys()))) + ')'
 
-        if not con:
-            con = db_con.connection()
-        if not cur:
-            cur = db_con.cursor(con)
-
-        insert_statement = 'INSERT INTO %s (' + ', '.join(self.attrs().keys()) + ') VALUES (' + ', '.join((['%s'] * len(self.attrs().keys()))) + ')'
+    def insert_values(self):
         values = list(self.attrs().values())
         values.insert(0, AsIs(self.table_name()))
-        cur.execute(insert_statement, tuple(values))
+        return tuple(values)
+
+    def insert(self):
+        con = db_con.connection()
+        cur = db_con.cursor(con)
+
+        cur.execute(self.insert_statement(), self.insert_values())
         con.commit()
 
-        if not cursor:
-            cur.close()
-        if not connection:
-            con.close()
+        cur.close()
+        con.close()
 
-    def excluded_atts(self):
+    @staticmethod
+    def excluded_atts():
         return ['created_at', 'modified_at']
 
     def attrs(self):
