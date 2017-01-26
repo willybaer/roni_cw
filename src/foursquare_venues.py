@@ -23,7 +23,7 @@ VENUES_URL = 'https://api.foursquare.com/v2/venues/search'
 def get_venues():
     squares = MapSquare.find_all_not_queried()
     for square in squares:
-        url = '%s?client_id=%s&client_secret=%s&v=20170120&m=foursquare&sw=%s&ne=%s&intent=browse' % (
+        url = '%s?client_id=%s&client_secret=%s&v=20170120&m=foursquare&sw=%s&ne=%s&intent=browse&limit=50' % (
             VENUES_URL,
             CLIEND_ID,
             SECRET,
