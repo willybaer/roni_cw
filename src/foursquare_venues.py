@@ -14,6 +14,7 @@ from events.location import Location
 from default.category import Category
 from events.location_category import LocationCategory
 from psycopg2 import IntegrityError
+from urllib.error import HTTPError
 
 CLIEND_ID = '33FG1P5NOGUXSXBBF24XJHBWLSUGLKIH2F0SSJT2F1ZS1FLE'
 SECRET = '1EPSAW44U3M5PPPCCCNRUXURVGHHRHXUE2DAYM0VFE33DARZ'
@@ -31,7 +32,12 @@ def get_venues():
             ','.join(str(x) for x in square.top_right))
 
         logging.info(url)
-        response = urlopen(url).read() # Verarbeiten von urllib.error.HTTPError: HTTP Error 403: Forbidden wenn die Requests aufgebraucht sind
+        try:
+            response = urlopen(url).read() # Verarbeiten von urllib.error.HTTPError: HTTP Error 403: Forbidden wenn die Requests aufgebraucht sind
+        except HTTPError as e:
+            logging.info(e)
+            break
+
         venues = json.loads(response, encoding='UTF-8')['response']['venues']
 
         # Filter venues where a full location is existing
