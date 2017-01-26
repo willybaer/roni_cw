@@ -84,12 +84,13 @@ def setup():
     MapSquare.delete_all()
 
     # Top Left and bottom right
-    squares = Geo.calculate_map_squares(geo_config.german_speaking_countries_map_squares['top_left'],
-                                        geo_config.german_speaking_countries_map_squares['bottom_right'], 800)
+    for box in geo_config.bounding_boxes['switzerland']:
+        squares = Geo.calculate_map_squares(box['top_left'],
+                                            box['bottom_right'], 800)
 
-    logging.info('Trying to insert %s squares' % len(squares))
-    MapSquare.insert_all(squares)
-    logging.info('Inserted %s squares' % len(squares))
+        logging.info('Trying to insert %s squares' % len(squares))
+        MapSquare.insert_all(squares)
+        logging.info('Inserted %s squares' % len(squares))
 
 
 def main(argv):
