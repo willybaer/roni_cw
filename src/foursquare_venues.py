@@ -3,6 +3,8 @@ import sys
 import json
 import db.config as config_file
 import db.connection as con
+import geo.config as geo_config
+import logging
 
 from urllib.request import urlopen
 from geo.geo import Geo
@@ -28,7 +30,7 @@ def get_venues():
             ','.join(str(x) for x in square.bottom_left),
             ','.join(str(x) for x in square.top_right))
 
-        print(url)
+        logging.info(url)
         response = urlopen(url).read() # Verarbeiten von urllib.error.HTTPError: HTTP Error 403: Forbidden wenn die Requests aufgebraucht sind
         venues = json.loads(response, encoding='UTF-8')['response']['venues']
 
@@ -57,9 +59,9 @@ def get_venues():
                                             longitude=filtered_venue['location']['lng'])
                         try:
                             location.insert()
-                            print('Added foursquare location for id %s' % location.uuid)
+                            logging.info('Added foursquare location for id %s' % location.uuid)
                         except IntegrityError as e:
-                            print(e)
+                            logging.info(e)
                             continue
 
                     # Add location categories reference
@@ -72,18 +74,22 @@ def get_venues():
                                 # Expecting that foursquare categories are existing in the db
                                 location_category = LocationCategory(location_uuid=location.uuid, category_uuid=category.uuid)
                                 location_category.insert()
-                                print('Added location category for id %s' % location_category.uuid)
+                                logging.info('Added location category for id %s' % location_category.uuid)
         # Finally update that square was used for a query
         square.update_queried_at()
 
 
 def setup():
+    # Delete all squares
     MapSquare.delete_all()
+
     # Top Left and bottom right
-    squares = Geo.calculate_map_squares([47.439580, 8.404776], [47.118777, 8.996261], 800)
-    for square in squares:
-        square.insert()
-    print('Inserted %s squares' % len(squares))
+    squares = Geo.calculate_map_squares(geo_config.german_speaking_countries_map_squares['top_left'],
+                                        geo_config.german_speaking_countries_map_squares['bottom_right'], 800)
+
+    logging.info('Trying to insert %s squares' % len(squares))
+    MapSquare.insert_all(squares)
+    logging.info('Inserted %s squares' % len(squares))
 
 
 def main(argv):
@@ -108,5 +114,7 @@ def main(argv):
             get_venues()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
+                        format='%(asctime)-15s %(levelname)-8s %(message)s')
     main(sys.argv)

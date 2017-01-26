@@ -50,3 +50,14 @@ class MapSquare(Model):
         con.close()
 
         return model_instances
+
+    @classmethod
+    def insert_all(cls, squares):
+        con = db_con.connection()
+        cur = db_con.cursor(con)
+
+        for square in squares:
+            square.insert(connection=con, cursor=cur)
+
+        cur.close()
+        con.close()

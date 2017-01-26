@@ -16,18 +16,25 @@ class Model(object):
             self.uuid = str(UUID.uuid4())
         self.__dict__.update(entries)
 
-    def insert(self):
-        con = db_con.connection()
-        cur = db_con.cursor(con)
+    def insert(self, connection, cursor):
+        con = connection
+        cur = cursor
+
+        if not con:
+            con = db_con.connection()
+        if not cur:
+            cur = db_con.cursor(con)
 
         insert_statement = 'INSERT INTO %s (' + ', '.join(self.attrs().keys()) + ') VALUES (' + ', '.join((['%s'] * len(self.attrs().keys()))) + ')'
         values = list(self.attrs().values())
         values.insert(0, AsIs(self.table_name()))
         cur.execute(insert_statement, tuple(values))
-
         con.commit()
-        cur.close()
-        con.close()
+
+        if not cursor:
+            cur.close()
+        if not connection:
+            con.close()
 
     def excluded_atts(self):
         return ['created_at', 'modified_at']
