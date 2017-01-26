@@ -3,9 +3,9 @@ db_config = {
         'user=postgres',
         'dbname=postgres'
     ],
-    'prod': {
+    'prod': [
         'user=postgres',
         'dbname=postgres',
         'password=roni2017'
-    }
+    ]
 }

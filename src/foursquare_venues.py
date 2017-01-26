@@ -108,8 +108,6 @@ def main(argv):
 
     con.DB_CONFIG = config_file.db_config[env]
 
-    logging.info(con.DB_CONFIG)
-
     for opt, arg in opts:
         if opt in ('-s', '--setup'):
             setup()
