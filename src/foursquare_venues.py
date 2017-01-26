@@ -32,12 +32,7 @@ def get_venues():
             ','.join(str(x) for x in square.top_right))
 
         logging.info(url)
-        try:
-            response = urlopen(url).read() # Verarbeiten von urllib.error.HTTPError: HTTP Error 403: Forbidden wenn die Requests aufgebraucht sind
-        except HTTPError as e:
-            logging.info(e)
-            break
-
+        response = urlopen(url).read() # Verarbeiten von urllib.error.HTTPError: HTTP Error 403: Forbidden wenn die Requests aufgebraucht sind
         venues = json.loads(response, encoding='UTF-8')['response']['venues']
 
         # Filter venues where a full location is existing
