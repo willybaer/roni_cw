@@ -106,7 +106,7 @@ def main(argv):
     else:
         env = next(iter(config_file.db_config.keys()))
 
-    con.DB_CONFIG = config_file.db_config[env]
+    con.set_db_config(config_file.db_config[env])
 
     for opt, arg in opts:
         if opt in ('-s', '--setup'):
