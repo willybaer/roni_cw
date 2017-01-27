@@ -81,7 +81,7 @@ def get_venues():
 
 def setup():
     # Delete all squares
-    MapSquare.delete_all()
+    # MapSquare.delete_all()
 
     # Top Left and bottom right
     for box in geo_config.bounding_boxes['switzerland']:
