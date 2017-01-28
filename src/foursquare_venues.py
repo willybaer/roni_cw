@@ -13,7 +13,7 @@ from default.city import City
 from events.location import Location
 from default.category import Category
 from events.location_category import LocationCategory
-from psycopg2 import IntegrityError
+from psycopg2 import IntegrityError, DataError
 
 CLIEND_ID = '33FG1P5NOGUXSXBBF24XJHBWLSUGLKIH2F0SSJT2F1ZS1FLE'
 SECRET = '1EPSAW44U3M5PPPCCCNRUXURVGHHRHXUE2DAYM0VFE33DARZ'
@@ -44,8 +44,13 @@ def get_venues():
                                                     and 'city' in x['location'], venues))
 
             for filtered_venue in filtered_venues:
-                city = City.find_by_zip_and_cc(zip=filtered_venue['location']['postalCode'],
-                                                cc=filtered_venue['location']['cc'])
+                try:
+                    city = City.find_by_zip_and_cc(zip=filtered_venue['location']['postalCode'],
+                                                    cc=filtered_venue['location']['cc'])
+                except DataError as e:
+                    logging.info(e)
+                    continue
+
                 if city:
                     # We will only add foursquare venues, if there is an existing city entry in our db
                     location = Location.find_by_foursquare_id(filtered_venue['id'])
