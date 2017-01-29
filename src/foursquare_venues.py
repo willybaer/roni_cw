@@ -89,7 +89,7 @@ def setup():
     # MapSquare.delete_all()
 
     # Top Left and bottom right
-    for box in geo_config.bounding_boxes['switzerland']:
+    for box in geo_config.bounding_boxes['austria']:
         squares = Geo.calculate_map_squares(box['top_left'],
                                             box['bottom_right'], 800)
 
