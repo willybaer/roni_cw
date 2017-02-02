@@ -1,8 +1,11 @@
 # https://github.com/Yelp/yelp-fusion/blob/master/fusion/python/sample.py
+import getopt
 import json
 import sys
 import logging
 import requests
+import db.config as config_file
+import db.connection as con
 
 from urllib.parse import quote
 from urllib.parse import urlencode
@@ -159,4 +162,21 @@ def main():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
                         format='%(asctime)-15s %(levelname)-8s %(message)s')
+
+    argv = sys.argv
+    try:
+        opts, args = getopt.getopt(argv[1:], 'd:', ['db='])
+    except getopt.GetoptError:
+        sys.exit(2)
+
+    # Setup DB environment
+    env = list(filter(lambda x: x[0] in ('-d', '--db'), opts))
+    if env and len(env) > 0:
+        env = env[0][1]
+    else:
+        env = next(iter(config_file.db_config.keys()))
+
+    con.set_db_config(config_file.db_config[env])
+
+    # Start process
     main()
