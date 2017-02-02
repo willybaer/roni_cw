@@ -25,12 +25,14 @@ def new(file_name):
 
 def migrate(env):
     # Migrations file
+    db_con.DB_CONFIG = config_file.db_config[env]
+
     full_path = os.path.realpath(__file__)
     file_dir = os.path.split(full_path)[0]
     migrations_dir = '%s/db/migrations' % file_dir
     if os.path.exists(migrations_dir):
         # Run migrations
-        conn = db_con.connection(config_file.db_config[env])
+        conn = db_con.connection()
         cur = db_con.cursor(conn)
 
         # Check if change log table exists

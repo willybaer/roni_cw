@@ -44,6 +44,7 @@ sudo apt-get install python3-pip
 sudo apt-get install libpq-dev python-dev
 sudo pip3 install psycopg2 // PostgresSQL Adapter python3
 sudo pip3 install regex
+sudo pip3 install requests
 
 
 # Connect to raspberry from outside

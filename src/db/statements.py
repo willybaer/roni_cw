@@ -43,6 +43,10 @@ class Where(Statement):
         self.query = '%s AND %s' % (self.query, column)
         return Comparator(self.query)
 
+    def limit(self, limit=10):
+        self.query = '%s LIMIT %s' % (self.query, str(limit))
+        return Where(self.query)
+
 
 class Comparator(Statement):
     def __init__(self, query):
