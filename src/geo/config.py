@@ -28,5 +28,12 @@ bounding_boxes = {
             'top_left': [49.099151, 14.701194],
             'bottom_right': [46.653314, 16.962189]
         }
+    ],
+    'germany': [
+        # Schweix DE - Bregenz AT
+        {
+            'top_left': [49.134604, 7.508044],
+            'bottom_right': [47.507108, 9.751487]
+        }
     ]
 }
