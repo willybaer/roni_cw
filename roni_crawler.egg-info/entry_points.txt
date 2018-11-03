@@ -1,0 +1,7 @@
+[console_scripts]
+crawl_gelbeseiten = app.gelbeseiten:main
+crawl_german_locations = app.german_locations:main
+roni_migrations = app.db.migration:main
+test_city = tests.model.test_model_city:main
+test_german_locations = tests.test_german_locations:main
+
