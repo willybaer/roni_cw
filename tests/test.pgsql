@@ -8,6 +8,11 @@ select * from "city"
     where postal_code = '73433';
 
 
+SELECT location.*, category.uuid AS category_uuid,category.name_de AS category_name_de  
+    FROM location 
+    JOIN location_category ON location.uuid = location_category.uuid 
+    JOIN category ON location_category.uuid = category_uuid 
+    WHERE gelbeseiten_id = '14e2e3be-4545-4b21-adda-73705ad630c4'
 
 select count(*) from city;
 

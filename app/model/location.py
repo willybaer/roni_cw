@@ -2,7 +2,8 @@ import app.db.connection as db_con
 
 from app.db.model import Model
 from app.db.statements import Select
-
+from app.model.location_category import LocationCategory
+from app.model.category import Category
 
 class Location(Model):
     def __init__(self,
@@ -38,13 +39,22 @@ class Location(Model):
         self.facebook = facebook
         self.categories = None
 
+    def excluded_atts(self) -> list:
+        atts = super().excluded_atts()
+        atts.append('categories')
+        return atts
+
     @classmethod
     def find_by_foursquare_id(cls, foursquare_id:str):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('foursquare_id').equals(foursquare_id)
-        cur.execute(statement.query)
+        statement = cls.select() \
+            .from_table(cls.table_name()) \
+            .where('foursquare_id').equals(foursquare_id) \
+            .build()
+
+        cur.execute(statement)
 
         entry = cur.fetchone()
         model_instance = None
@@ -61,8 +71,12 @@ class Location(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('gelbeseiten_id').equals(gelbeseiten_id)
-        cur.execute(statement.query)
+        statement = cls.select() \
+            .from_table(cls.table_name()) \
+            .where('gelbeseiten_id').equals(gelbeseiten_id) \
+            .build()
+
+        cur.execute(statement)
 
         entry = cur.fetchone()
         model_instance = None
@@ -79,8 +93,12 @@ class Location(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('yelp_id').equals(yelp_id)
-        cur.execute(statement.query)
+        statement = cls.select() \
+            .from_table(cls.table_name()) \
+            .where('yelp_id').equals(yelp_id) \
+            .build()
+
+        cur.execute(statement)
 
         entry = cur.fetchone()
         model_instance = None
@@ -97,8 +115,14 @@ class Location(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('street').equals(street).and_column('city_uuid').equals(city_uuid).and_column('name').equals(name)
-        cur.execute(statement.query)
+        statement = cls.select() \
+            .from_table(cls.table_name()) \
+            .where('street').equals(street) \
+            .and_column('city_uuid').equals(city_uuid) \
+            .and_column('name').equals(name) \
+            .build()
+
+        cur.execute(statement)
 
         entry = cur.fetchone()
         model_instance = None
@@ -115,17 +139,32 @@ class Location(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = 'SELECT location.*, c.* FROM location ' \
-                    '   JOIN location_category ON location.uuid = location_category.location_uuid ' \
-                    '   JOIN category c on location_category.category_uuid = c.uuid ' \
-                    'WHERE location.gelbeseiten_id = \'%s\'' % gelbeseiten_id
+        statement = cls.select() \
+            .from_table(cls.table_name()) \
+            .join(table=LocationCategory.table_name()) \
+                .on('%s.uuid' % Location.table_name()) \
+                .equals('%s.location_uuid' % LocationCategory.table_name()) \
+            .join(table=Category.table_name(), columns=['uuid', 'name_de', 'name_en', 'parent_category_uuid']) \
+                .on('%s.category_uuid' % LocationCategory.table_name()) \
+                .equals('%s.uuid' % Category.table_name()) \
+            .where('gelbeseiten_id') \
+            .equals(gelbeseiten_id) \
+            .build()
+        
         cur.execute(statement)
 
         # For each entry create a new instance
-        entry = cur.fetchall()
-        model_instance = None
-        if entry:
-            model_instance = cls(**entry)
+        entries = cur.fetchall()
+        if len(entries) == 0:
+            return None
+
+        sub_instances = []
+        for entry in entries:
+            category_values = dict((k, v) for (k, v) in entry.items() if k.startswith('category_'))
+            sub_instances.append(Category(**category_values))
+        
+        model_instance = cls(**entries[0])
+        model_instance.categories = sub_instances
 
         cur.close()
         con.close()

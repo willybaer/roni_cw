@@ -21,6 +21,7 @@ class TestModelLocation(unittest.TestCase):
         LocationCategory.delete_all()
         Location.delete_all()
         Category.delete_all()
+        City.delete_all()
 
     def test_happy_find_location_with_categories(self):
         # Create Location and Category
@@ -34,7 +35,7 @@ class TestModelLocation(unittest.TestCase):
         second_category.insert()
 
         gelbeseiten_id = '14e2e3be-4545-4b21-adda-73705ad630c4'
-        location = Location(city.uuid, name='name_de', street='street', phone='phone', gelbeseiten_id=gelbeseiten_id)
+        location = Location(city_uuid=city.uuid, name='name_de', street='street', phone='phone', gelbeseiten_id=gelbeseiten_id)
         location.insert()
 
         LocationCategory(location_uuid=location.uuid, category_uuid=category.uuid).insert()
@@ -43,6 +44,7 @@ class TestModelLocation(unittest.TestCase):
         found_location = Location.find_with_categories(gelbeseiten_id=gelbeseiten_id)        
         self.assertIsNotNone(found_location)
         self.assertIsNotNone(found_location.categories)
+        self.assertEquals(len(found_location.categories), 2)
 
 def main():
     # Setup testdatabase

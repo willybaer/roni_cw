@@ -2,34 +2,24 @@ import uuid as UUID
 import regex
 import app.db.connection as db_con
 
+from datetime import datetime
 from app.db.statements import Select
 from psycopg2.extensions import AsIs
-from app.db.helper import needs_dollar_quote
-
+from app.db.helper import needs_dollar_quote  
 
 class Model(Select):
-    class_name = None
+    class_name:str = None
+    created_at: datetime
+    modified_at: datetime
+    uuid:str
 
-    def __init__(self, created_at=None, modified_at=None, uuid=None, **entries):
-        self._created_at = created_at
-        self._modified_at = modified_at
-        self._uuid = uuid
-        if not self._uuid:
-            self._uuid = str(UUID.uuid4())
-        self.__dict__.update(entries)
+    def __init__(self, uuid=None, created_at=None, modified_at=None, **entries):
+        self.created_at = created_at
+        self.modified_at = modified_at
+        self.uuid = uuid
+        if self.uuid is None:
+            self.uuid = str(UUID.uuid4())
 
-    @property
-    def created_at(self):
-        return self._created_at
-
-    @property
-    def modified_at(self):
-        return self._modified_at
-
-    @property
-    def uuid(self):
-        return self._uuid
-        
     #
     # Insert 
     #
@@ -46,7 +36,9 @@ class Model(Select):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        cur.execute(self.insert_statement(), self.insert_values())
+        statement = self.insert_statement()
+        values = self.insert_values()
+        cur.execute(statement, values)
         con.commit()
 
         cur.close()
@@ -58,12 +50,12 @@ class Model(Select):
     def update_statement(self):
         keys = list(filter(lambda x: x != 'uuid', self.attrs().keys()))
         keys = list(map(lambda x: x + ' = %s', keys))
-        return 'UPDATE %s SET ' + ', '.join(keys) + 'WHERE uuid = %s' # TODO: UUID als decorator definieren
+        return 'UPDATE %s SET ' + ', '.join(keys) + 'WHERE uuid = %s'
 
     def update_values(self):
         values = list(filter(lambda x: x != self.uuid, self.attrs().values()))
         values.insert(0, AsIs(self.table_name()))
-        values.append(self.uuid) # TODO: UUID als decorator definieren
+        values.append(self.uuid)
         return tuple(values)
 
     def update(self):
@@ -76,13 +68,13 @@ class Model(Select):
         cur.close()
         con.close()    
 
-    @staticmethod
-    def excluded_atts():
+    def excluded_atts(self) -> list:
         return ['created_at', 'modified_at']
-
+    
     def attrs(self):
+        excluded = self.excluded_atts()
         attrs_dict = self.__dict__
-        wanted_keys = list(k for k in attrs_dict.keys() if k not in self.excluded_atts())
+        wanted_keys = list(k for k in attrs_dict.keys() if k not in excluded)
         attrs_dict = dict((k, v) for k, v in attrs_dict.items() if k in wanted_keys)
         return attrs_dict
 

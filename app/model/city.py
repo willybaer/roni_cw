@@ -41,9 +41,9 @@ class City(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('postal_code').posix('.*%s.*' % postal_code).and_column('alpha_2_code').equals(alpha_2_code)
-        print(statement.query)
-        cur.execute(statement.query)
+        statement = cls.select().from_table(cls.table_name()).where('postal_code').posix('.*%s.*' % postal_code).and_column('alpha_2_code').equals(alpha_2_code).build()
+        print(statement)
+        cur.execute(statement)
 
         entry = cur.fetchone()
         city_entry = None

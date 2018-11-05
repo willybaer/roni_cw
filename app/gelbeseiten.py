@@ -119,6 +119,8 @@ def query_industry_details(details_link, gelbeseiten_id, latitude, longitude):
         print('Location is already existing: name=%s and city=%s' %(industry_name, city.name))
 
 def query_industries_list_for_city(city_link):
+    print('Industires list for city: %s ' % city_link)
+
     iteration = 1
     while True:
         try:
@@ -138,6 +140,8 @@ def query_industries_list_for_city(city_link):
 
 
 def query_sub_sector_in_cities(sub_sectors_link):
+    print('Sub sectors link: %s ' % sub_sectors_link)
+    
     for state in GERMAN_STATE_SITES:
         html = urlopen('%s/%s' % (sub_sectors_link, state))
         soup = BeautifulSoup(html.read(), 'html5lib')
@@ -150,6 +154,7 @@ def query_sub_sector_in_cities(sub_sectors_link):
 
 def query_main_sector(sectors_link):
     # Can have multiple pages
+    print('Looking inside the sectors: %s ' % sectors_link)
     iteration = 1
     while True:
         try:

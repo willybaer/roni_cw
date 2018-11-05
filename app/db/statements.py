@@ -3,102 +3,115 @@
 #
 from __future__ import annotations
 from app.db.helper import needs_dollar_quote
-from app.db.model import Model
 
 class Statement(object):
-    def __init__(self, query):
+    def __init__(self, query, statement):
         self.query = query
-
+        self.statement = statement
+    def build(self) -> str:    
+        return self.statement + ' ' + self.query
 
 class Select(Statement):
     def __init__(self, *args):
-        super().__init__(None)
+        super().__init__(None, None)
         self.statement = 'SELECT'
         if args:
             # Setup select statement
-            self.query = '%s %s' % (self.statement, ','.join(args))
+            cols = list(map(lambda col: '_t_.%s' % col, args))
+            self.statement = '%s %s' % (self.statement, ','.join(cols))
         else:
-            self.query = '%s *' % self.statement
+            self.statement = '%s _t_.*' % self.statement
+        self.query = ''
 
     @classmethod
     def select(cls, *args):
         select = Select(*args)
-        return From(select.query)
+        return From(select.query, select.statement)
 
 
 class From(Statement):
-    def __init__(self, query):
-        super().__init__(query)
+    def __init__(self, query, statement):
+        super().__init__(query, statement)
 
     def from_table(self, table_name) -> Where:
+        # TODO: FIX THAT
         self.query = '%s FROM %s' % (self.query, table_name)
-        return Where(self.query)
+        self.statement = self.statement.replace('_t_', table_name)
+        return AfterFrom(self.query, self.statement)
 
 class AfterFrom(Statement):
-    def __init__(self, query):
-        super().__init__(query)
+    def __init__(self, query, statement):
+        super().__init__(query, statement)
+
+    def join(self, table:str, columns:list=None) -> JoinOn:
+        self.query = '%s JOIN %s' % (self.query, table)
+        if columns is not None:
+            join_string_map = list(map(lambda col: '%s.%s AS %s_%s' % (table, col, table, col), columns)) 
+            sub_statement = ','.join(join_string_map)  
+            self.statement = '%s, %s' % (self.statement, sub_statement)
+        return JoinOn(self.query, self.statement)    
 
     def where(self, column) -> Comparator:
         self.query = '%s WHERE %s' % (self.query, column)
-        return Comparator(self.query)
-    
-    def left_join(self, cls:Model, columns:list):
-        self.query = '%s LEFT JOIN %s' % (self.query, cls.table_name)
-        join_string = '%s_ ,' % cls.__name__
-        self.query = self.query.replace('SELECT ', 'SELECT %s' % join_string.join(columns))  
-        return JoinOn(self.query)
+        return Comparator(self.query, self.statement)
 
 class JoinOn(Statement):
-    def __init__(self, query):
-        super().__init__(query)
+    def __init__(self, query, statement):
+        super().__init__(query, statement)
 
-    def on_equals(self, column, value):
-        self.query = '%s ON %s = %s' % (self.query, column, value)
-        return Where(self.query)
+    def on(self, column) -> Where:
+        self.query = '%s ON %s' % (self.query, column)
+        return JoinComparator(self.query, self.statement)
+
+
+class JoinComparator(Statement):
+    def __init__(self, query, statement):
+        super().__init__(query, statement)
+
+    def equals(self, value) -> AfterFrom:
+        self.query = '%s = %s' % (self.query, value)
+        return AfterFrom(self.query, self.statement)
+
 
 class Where(Statement):
-    def __init__(self, query):
-        super().__init__(query)
-
-    def where(self, column) -> Comparator:
-        self.query = '%s WHERE %s' % (self.query, column)
-        return Comparator(self.query)
+    def __init__(self, query, statement):
+        super().__init__(query, statement)
 
     # TODO Auslagern in eine Separate Klasse
     def and_column(self, column) -> Comparator:
         self.query = '%s AND %s' % (self.query, column)
-        return Comparator(self.query)
+        return Comparator(self.query, self.statement)
 
     def limit(self, limit=10) -> Where:
         self.query = '%s LIMIT %s' % (self.query, str(limit))
-        return Where(self.query)
+        return Where(self.query, self.statement)
 
 
 class Comparator(Statement):
-    def __init__(self, query):
-        super().__init__(query)
+    def __init__(self, query, statement):
+        super().__init__(query, statement)
 
     # TODO sollte ein AND - OR - LIMIT
     def equals(self, value) -> Where:
         self.query = '%s = %s' % (self.query, needs_dollar_quote(value))
-        return Where(self.query)
+        return Where(self.query, self.statement)
 
     def like(self, value) -> Where:
         self.query = '%s LIKE %s' % (self.query, needs_dollar_quote(value))
-        return Where(self.query)
+        return Where(self.query, self.statement)
 
     def similiar(self, value) -> Where:
         self.query = '%s SIMILIAR TO %s' % (self.query, needs_dollar_quote(value))
-        return Where(self.query)
+        return Where(self.query, self.statement)
 
     def posix(self, value) -> Where:
         self.query = '%s ~ \'%s\'' % (self.query, value)
-        return Where(self.query)
+        return Where(self.query, self.statement)
 
     def is_null(self) -> Where:
         self.query = '%s IS NULL' % self.query
-        return Where(self.query)
+        return Where(self.query, self.statement)
 
     def is_not_null(self) -> Where:
         self.query = '%s IS NOT NULL' % self.query
-        return Where(self.query)
+        return Where(self.query, self.statement)
