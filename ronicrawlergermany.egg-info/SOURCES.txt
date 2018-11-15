@@ -1,0 +1,7 @@
+README.md
+ronicrawlergermany.egg-info/PKG-INFO
+ronicrawlergermany.egg-info/SOURCES.txt
+ronicrawlergermany.egg-info/dependency_links.txt
+ronicrawlergermany.egg-info/entry_points.txt
+ronicrawlergermany.egg-info/requires.txt
+ronicrawlergermany.egg-info/top_level.txt

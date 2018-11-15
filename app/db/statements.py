@@ -43,10 +43,27 @@ class AfterFrom(Statement):
     def __init__(self, query, statement):
         super().__init__(query, statement)
 
-    def join(self, table:str, columns:list=None) -> JoinOn:
-        self.query = '%s JOIN %s' % (self.query, table)
+    def join(self, table:str, columns:list=None, table_name=None) -> JoinOn:
+        if table_name:
+            self.query = '%s JOIN %s %s' % (self.query, table, table_name)
+        else:    
+            table_name = table
+            self.query = '%s JOIN %s' % (self.query, table)
+
+        return self.__join(columns, table_name=table_name)
+
+    def left_join(self, table:str, columns:list=None, table_name=None) -> JoinOn:
+        if table_name:
+            self.query = '%s LEFT JOIN %s %s' % (self.query, table, table_name)
+        else:    
+            table_name = table
+            self.query = '%s LEFT JOIN %s' % (self.query, table)
+
+        return self.__join(columns, table_name=table_name)
+        
+    def __join(self, columns:list=None, table_name=None):
         if columns is not None:
-            join_string_map = list(map(lambda col: '%s.%s AS %s_%s' % (table, col, table, col), columns)) 
+            join_string_map = list(map(lambda col: '%s.%s AS %s_%s' % (table_name, col, table_name, col), columns)) 
             sub_statement = ','.join(join_string_map)  
             self.statement = '%s, %s' % (self.statement, sub_statement)
         return JoinOn(self.query, self.statement)    
@@ -55,14 +72,21 @@ class AfterFrom(Statement):
         self.query = '%s WHERE %s' % (self.query, column)
         return Comparator(self.query, self.statement)
 
+    def limit(self, limit=10) -> Where:
+        self.query = '%s LIMIT %s' % (self.query, str(limit))
+        return Where(self.query, self.statement)    
+
 class JoinOn(Statement):
     def __init__(self, query, statement):
         super().__init__(query, statement)
 
-    def on(self, column) -> Where:
+    def on(self, column) -> JoinComparator:
         self.query = '%s ON %s' % (self.query, column)
         return JoinComparator(self.query, self.statement)
 
+    def and_(self, column) -> JoinComparator:
+        self.query = '%s AND %s' % (self.query, column)
+        return JoinComparator(self.query, self.statement)
 
 class JoinComparator(Statement):
     def __init__(self, query, statement):
@@ -92,16 +116,16 @@ class Comparator(Statement):
         super().__init__(query, statement)
 
     # TODO sollte ein AND - OR - LIMIT
-    def equals(self, value) -> Where:
-        self.query = '%s = %s' % (self.query, needs_dollar_quote(value))
+    def equals(self, value, check_for_qoute=True) -> Where:
+        self.query = '%s = %s' % (self.query, needs_dollar_quote(value, check_for_qoute))
         return Where(self.query, self.statement)
 
-    def like(self, value) -> Where:
-        self.query = '%s LIKE %s' % (self.query, needs_dollar_quote(value))
+    def like(self, value, check_for_qoute=True) -> Where:
+        self.query = '%s LIKE %s' % (self.query, needs_dollar_quote(value, check_for_qoute))
         return Where(self.query, self.statement)
 
-    def similiar(self, value) -> Where:
-        self.query = '%s SIMILIAR TO %s' % (self.query, needs_dollar_quote(value))
+    def similiar(self, value, check_for_qoute=True) -> Where:
+        self.query = '%s SIMILIAR TO %s' % (self.query, needs_dollar_quote(value, check_for_qoute))
         return Where(self.query, self.statement)
 
     def posix(self, value) -> Where:

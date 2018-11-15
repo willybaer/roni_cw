@@ -1,0 +1,4 @@
+[console_scripts]
+crawl_gelbeseiten = app.gelbeseiten_main:main
+crawl_german_locations = app.german_locations:main
+

@@ -1,20 +1,23 @@
 db_config = {
     'test': [
         'user=postgres',
-        'dbname=postgres_test'
+        'dbname=roni_test'
     ],
     'dev': [
         'user=postgres',
-        'dbname=postgres'
+        'dbname=roni_dev'
     ],
     'prod': [
         'user=postgres',
-        'dbname=postgres',
-        'password=roni2017'
+        'dbname=roni_prod',
+        'password=roni2018'
     ]
 }
 
 migration_config = {
+    'test': {
+        'migration_db': './migrations'
+    },
     'dev': {
         'migration_db': './migrations'
     },

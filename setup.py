@@ -2,25 +2,22 @@
 import setuptools
 
 setuptools.setup(
-    name="roni_crawler",
+    name="ronicrawlergermany",
     version="0.0.1",
     author="Wilhelm Dewald",
     author_email="Wilhelm Dewald",
-    description="My Crawler project",
-    long_description="long_description",
+    description="Crawling stuff for the country germany",
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
     entry_points={
         "console_scripts": [
-            "roni_migrations=app.db.migration:main",
             "crawl_german_locations=app.german_locations:main",
-            "crawl_swiss_locations=app.swiss_locations:main",
-            "crawl_gelbeseiten=app.gelbeseiten:main"
+            "crawl_gelbeseiten=app.gelbeseiten_main:main"
         ],
     },
+    install_requires=[
+        'roniutils',
+        'ronidatabase',
+        'roniscrapper'
+        ]
 )

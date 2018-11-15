@@ -60,32 +60,38 @@ def migrate(env):
         files = os.listdir(migrations_dir)
         files = list(filter(lambda f: f.endswith('.sql') , files))
         ordered_files = sorted(files, key=lambda x: int(x.split('_')[0]))
-        for file in ordered_files:  # Return the name of the files in directory
-            if file.endswith('.sql'):
-                # Log timestamp
-                log_level = file.split('_')
-                log_level = log_level[0]
+        try:
+            for file in ordered_files:  # Return the name of the files in directory
+                if file.endswith('.sql'):
+                    # Log timestamp
+                    log_level = file.split('_')
+                    log_level = log_level[0]
 
-                # Check if migration exists
-                cur.execute('SELECT * FROM %s ORDER BY last_timestamp DESC', (AsIs(DB_CHANGE_LOG),))
-                last_entry = cur.fetchone()
+                    # Check if migration exists
+                    cur.execute('SELECT * FROM %s ORDER BY last_timestamp DESC', (AsIs(DB_CHANGE_LOG),))
+                    last_entry = cur.fetchone()
 
-                if last_entry and last_entry['last_timestamp'] >= int(log_level):
-                    print('Migration already exists for file %s' % file)
-                else:
-                    # Execute sql
-                    print('executing migration for file %s' % file)
-                    s = open('%s/%s' % (migrations_dir, file), 'rb').read().decode('UTF-8')
-                    cur.execute(s)
-                    conn.commit()
+                    if last_entry and last_entry['last_timestamp'] >= int(log_level):
+                        print('Migration already exists for file %s' % file)
+                    else:
+                        # Execute sql
+                        print('executing migration for file %s' % file)
+                        s = open('%s/%s' % (migrations_dir, file), 'rb').read().decode('UTF-8')
+                        cur.execute(s)
+                        conn.commit()
 
-                    # Add migration log entry
-                    print('Adding log entry for timestamp: %s' % log_level)
-                    cur.execute('INSERT INTO %s (last_timestamp) VALUES (%s)', (AsIs(DB_CHANGE_LOG), int(log_level),))
-                    conn.commit()
-
-        cur.close()
-        conn.close()
+                        # Add migration log entry
+                        print('Adding log entry for timestamp: %s' % log_level)
+                        cur.execute('INSERT INTO %s (last_timestamp) VALUES (%s)', (AsIs(DB_CHANGE_LOG), int(log_level),))
+                        conn.commit()
+        except Exception as e:
+            print(e)
+            conn.rollback()
+        finally:
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
     else:
         print('No migrations exisiting')
 

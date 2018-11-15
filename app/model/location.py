@@ -135,6 +135,30 @@ class Location(Model):
         return model_instance        
 
     @classmethod
+    def find_by_phone_and_city_and_name(cls, phone:str, city_uuid:str, name:str):
+        con = db_con.connection()
+        cur = db_con.cursor(con)
+
+        statement = cls.select() \
+            .from_table(cls.table_name()) \
+            .where('phone').equals(phone) \
+            .and_column('city_uuid').equals(city_uuid) \
+            .and_column('name').equals(name) \
+            .build()
+
+        cur.execute(statement)
+
+        entry = cur.fetchone()
+        model_instance = None
+        if entry:
+            model_instance = cls(**entry)
+
+        cur.close()
+        con.close()
+
+        return model_instance        
+
+    @classmethod
     def find_with_categories(cls, gelbeseiten_id):
         con = db_con.connection()
         cur = db_con.cursor(con)
@@ -160,7 +184,7 @@ class Location(Model):
 
         sub_instances = []
         for entry in entries:
-            category_values = dict((k, v) for (k, v) in entry.items() if k.startswith('category_'))
+            category_values = dict((k.replace('category_', ''), v) for (k, v) in entry.items() if k.startswith('category_'))
             sub_instances.append(Category(**category_values))
         
         model_instance = cls(**entries[0])

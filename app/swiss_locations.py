@@ -3,6 +3,7 @@ import sys
 import app.db.connection as con
 import regex
 
+from requests_html import HTMLSession
 from app.db.config import db_config
 from urllib.request import urlopen
 from bs4 import BeautifulSoup, Comment

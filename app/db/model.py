@@ -50,7 +50,7 @@ class Model(Select):
     def update_statement(self):
         keys = list(filter(lambda x: x != 'uuid', self.attrs().keys()))
         keys = list(map(lambda x: x + ' = %s', keys))
-        return 'UPDATE %s SET ' + ', '.join(keys) + 'WHERE uuid = %s'
+        return 'UPDATE %s SET ' + ', '.join(keys) + ' WHERE uuid = %s'
 
     def update_values(self):
         values = list(filter(lambda x: x != self.uuid, self.attrs().values()))
@@ -76,7 +76,9 @@ class Model(Select):
         attrs_dict = self.__dict__
         wanted_keys = list(k for k in attrs_dict.keys() if k not in excluded)
         attrs_dict = dict((k, v) for k, v in attrs_dict.items() if k in wanted_keys)
-        return attrs_dict
+        
+        wanted_keys = list(map(lambda key: key if len(key.split('__')) < 2 else key.split('__')[1], wanted_keys))
+        return dict(zip(wanted_keys, attrs_dict.values()))
 
     @classmethod
     def table_name(cls):
@@ -93,9 +95,9 @@ class Model(Select):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('uuid').equals(uuid) # TODO: 
-        print(statement.query)
-        cur.execute(statement.query)
+        statement = cls.select().from_table(cls.table_name()).where('uuid').equals(uuid).build()
+        print(statement)
+        cur.execute(statement)
 
         # For each entry create a new instance
         entry = cur.fetchone()
@@ -108,6 +110,28 @@ class Model(Select):
 
         return model_instance
 
+    @classmethod
+    def find_with_limit(cls, limit):
+        con = db_con.connection()
+        cur = db_con.cursor(con)
+
+        statement = cls.select().from_table(cls.table_name()).limit(limit).build()
+        print(statement)
+        cur.execute(statement)
+
+        # For each entry create a new instance
+        entries = cur.fetchall()
+        if len(entries) == 0:
+            return None
+
+        model_instances = []
+        for entry in entries:
+            model_instances.append(cls(**entry))
+
+        cur.close()
+        con.close()
+
+        return model_instances
 
     #
     # Delete

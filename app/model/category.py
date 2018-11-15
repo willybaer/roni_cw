@@ -28,9 +28,9 @@ class Category(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('foursquare_id').equals(foursquare_id)
-        print(statement.query)
-        cur.execute(statement.query)
+        statement = cls.select().from_table(cls.table_name()).where('foursquare_id').equals(foursquare_id).build()
+        print(statement)
+        cur.execute(statement)
 
         entry = cur.fetchone()
         model_instance = None
@@ -47,9 +47,9 @@ class Category(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('yelp_alias').equals(yelp_alias)
-        print(statement.query)
-        cur.execute(statement.query)
+        statement = cls.select().from_table(cls.table_name()).where('yelp_alias').equals(yelp_alias).build()
+        print(statement)
+        cur.execute(statement)
 
         entry = cur.fetchone()
         model_instance = None
@@ -66,9 +66,9 @@ class Category(Model):
         con = db_con.connection()
         cur = db_con.cursor(con)
 
-        statement = cls.select().from_table(cls.table_name()).where('name_de').equals(name_de)
-        print(statement.query)
-        cur.execute(statement.query)
+        statement = cls.select().from_table(cls.table_name()).where('name_de').equals(name_de).build()
+        print(statement)
+        cur.execute(statement)
 
         entry = cur.fetchone()
         model_instance = None

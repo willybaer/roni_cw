@@ -19,11 +19,11 @@ def before_each():
 
 def testing_city_pages_with_multiple_postal_codes():
     # Example details page where a city has more than one postal code
-    details_url = '81404-gemeinde-aalen.html'
+    details_url = 'https://www.suche-postleitzahl.org/aachen-plz-52062-52080.3428'
     parse_content(details_url)
 
     # Find all cities
-    cities = City.find_all()
+    cities = City.find_with_limit(3)
     assert len(cities) == 3
 
 def after():

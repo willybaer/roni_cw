@@ -1,11 +1,11 @@
-select * from "location"
-    where name = 'Speisegaststätte Am Aicha';
+select * from location
+    where name = 'Autohaus Geschwister Schneider GmbH';
 
 delete from location_category
     where location_uuid = '0b6d80fb-2be4-448a-84d4-396f7563678d';
 
 select * from "city"
-    where postal_code = '73433';
+    where postal_code like 'Karlsruhe';
 
 
 SELECT location.*, category.uuid AS category_uuid,category.name_de AS category_name_de  
@@ -14,12 +14,17 @@ SELECT location.*, category.uuid AS category_uuid,category.name_de AS category_n
     JOIN category ON location_category.uuid = category_uuid 
     WHERE gelbeseiten_id = '14e2e3be-4545-4b21-adda-73705ad630c4'
 
+select count(*) from location
+    WHERE alpha_2_code = 'DE'
+    AND parent_city_uuid IS NULL;
+
+SELECT *  FROM city 
+    WHERE '12345' = ANY (postal_code);
+
 select count(*) from city;
 
-select count(*) from location;
-
 select * from city
- where zip LIKE '724%' and alpha_2_code = 'DE';
+ where '79108' = ANY(postal_code) and alpha_2_code = 'DE';
 
 select * from map_square
 where yelp_queried_at > NOW() - INTERVAL '1 day' 
